@@ -1,16 +1,19 @@
 // screens/HomeScreen.tsx
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
+  ImageBackground,
   Image,
   FlatList,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import SearchBar from '../components/SearchBar';
 import Categories from '../components/Categories';
@@ -101,6 +104,25 @@ const HomeScreen = () => {
     },
   ];
 
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const token = await AsyncStorage.getItem('authToken');
+      if (!token) {
+        navigation.navigate('Login' as never);
+      }
+      console.log('Token:', token);
+      let userData = await AsyncStorage.getItem('userData');
+      if (!userData) {
+        navigation.navigate('Login' as never);
+      } else {
+        userData = [];
+      }
+      console.log('User data:', userData );
+    };
+
+    checkLoginStatus();
+  }, [navigation]);
+
   const handleSeeAll = (section: string) => {
     if (section === 'categories') {
       navigation.navigate('Categories' as never);
@@ -110,10 +132,10 @@ const HomeScreen = () => {
   };
 
   const goToLogin = () => {
-    navigation.navigate('Login');
+    navigation.navigate('Login' as never);
   };
 
-  const renderHeader = () => (
+  const headerContent = (
     <>
       <View style={styles.topHeader}>
         <TouchableOpacity style={styles.leftIcon}>
@@ -137,6 +159,10 @@ const HomeScreen = () => {
 
       <SearchBar placeholder="Search artworks, artists..." />
 
+      {/* <View>
+        <Text>{userData.name}</Text>
+      </View> */}
+
       <Categories
         categories={categories}
         onSeeAll={() => handleSeeAll('categories')}
@@ -156,16 +182,28 @@ const HomeScreen = () => {
         artworks={artworkData}
         onSeeAll={() => handleSeeAll('new arrivals')}
       />
+
+      <TouchableOpacity onPress={() => navigation.navigate('Artwork' as never)}>
+        <ImageBackground
+          source={require('../assets/artwork/img1.jpeg')}
+          style={styles.imageBackground}
+          imageStyle={{ borderRadius: 15 }}
+        >
+          <View style={styles.overlay}>
+            <Text style={styles.buttonText}>Explore More Artworks</Text>
+          </View>
+        </ImageBackground>
+      </TouchableOpacity>
     </>
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={[]} // No main list data; header contains all components
+        data={[]} // No list items, just header content
         keyExtractor={() => Math.random().toString()}
         renderItem={null}
-        ListHeaderComponent={renderHeader}
+        ListHeaderComponent={headerContent}
         ListFooterComponent={<BottomNavigation />}
         showsVerticalScrollIndicator={false}
       />
@@ -216,6 +254,25 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: 'center',
     fontWeight: '500',
+  },
+  imageBackground: {
+    width: '100%',
+    height: 150,
+    marginVertical: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  overlay: {
+    backgroundColor: 'rgba(252, 246, 246, 0.4)',
+    paddingVertical: 20,
+    paddingHorizontal: 30,
+    borderRadius: 15,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

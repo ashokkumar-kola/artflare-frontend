@@ -42,8 +42,8 @@ const ArtworkCard: React.FC<{ artwork: ArtworkProps }> = ({ artwork }) => {
       <Image
         source={
           art_image
-            ? { uri: art_image }
-            : require('../assets/image-placeholder.png') // Add a placeholder in your assets
+            ? require('../assets/fantasy/Fantasy1.jpeg') // { uri: art_image }
+            : require('../assets/painting/Painting4.jpeg') // Add a placeholder in your assets
         }
         style={styles.image}
         resizeMode="cover"
@@ -96,7 +96,7 @@ export default ArtworkCard;
 const styles = StyleSheet.create({
   card: {
     width: width * 0.9,
-    backgroundColor: '#fff',
+    backgroundColor: '#E5D9F2',
     borderRadius: 16,
     overflow: 'hidden',
     marginVertical: 12,
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 180,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#E5D9F2',
   },
   info: {
     padding: 16,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   desc: {
     fontSize: 14,
-    color: '#666',
+    color: '#000000',
     marginBottom: 10,
   },
   row: {

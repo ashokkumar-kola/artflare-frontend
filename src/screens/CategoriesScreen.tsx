@@ -17,7 +17,7 @@ type RootStackParamList = {
   Artworks: { category: string };
 };
 
-const API_URL = 'http://10.0.2.2:3000/api/categories';
+const API_URL = 'http://192.168.1.93:3000/api/categories';
 
 interface Category {
   id: number;
@@ -51,7 +51,7 @@ const CategoriesScreen: React.FC = () => {
   }, []);
 
   const handleCategoryPress = (category: string) => {
-    navigation.navigate('Artworks', { category });
+    navigation.navigate('Artwork', { category });
   };
 
   if (loading) {
@@ -83,9 +83,10 @@ const CategoriesScreen: React.FC = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.card}
+            style={styles.itemContainer}
             onPress={() => handleCategoryPress(item.category)}
           >
+            <View style={styles.card} />
             <Text style={styles.categoryText}>{item.category}</Text>
           </TouchableOpacity>
         )}
@@ -113,22 +114,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     color: '#333',
   },
-  card: {
+  itemContainer: {
     flex: 1,
     minWidth: '45%',
     margin: 8,
+    alignItems: 'center',
+  },
+  card: {
+    width: '100%',
     height: 120,
     backgroundColor: '#E5D9F2',
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 12,
     elevation: 3,
   },
   categoryText: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#333',
     textAlign: 'center',
+    marginTop: 8,
   },
   centered: {
     flex: 1,

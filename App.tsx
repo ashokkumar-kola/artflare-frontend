@@ -19,6 +19,7 @@ import ArtworksScreen from './src/screens/categories/ArtworksScreen';
 import ArtistDashboardScreen from './src/screens/ArtistDashboardScreen';
 import AddEditArtworkScreen from './src/screens/AddEditArtworkScreen';
 import UserDashboardScreen from './src/screens/UserDashboardScreen';
+import ArtworkScreen from './src/screens/ArtworkScreen';
 import Home from './src/screens/Home';
 
 
@@ -38,6 +39,7 @@ function App() {
         <RootStack.Screen name="Register" component={RegistrationScreen} />
         <RootStack.Screen name="Categories" component={CategoriesScreen} />
         <RootStack.Screen name="Artworks" component={ArtworksScreen} />
+        <RootStack.Screen name="Artwork" component={ArtworkScreen} />
         <RootStack.Screen name="Explore" component={ExploreScreen} />
         <RootStack.Screen name="Favorites" component={FavoritesScreen} />
         <RootStack.Screen name="Cart" component={CartScreen} />

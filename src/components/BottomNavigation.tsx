@@ -30,9 +30,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#d2a0ff',
     borderTopWidth: 1,
     borderTopColor: '#ccc',
+    shadowColor: '#000',
   },
 });
 

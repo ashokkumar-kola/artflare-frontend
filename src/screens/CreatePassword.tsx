@@ -11,30 +11,55 @@ import {
   ScrollView,
   Platform,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  Alert
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import axios from 'axios';
 
 const CreatePasswordScreen = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const navigation = useNavigation();
+  const route = useRoute();
+  const { email } = route.params || {}; // Assumes email passed via navigation
 
-  const handleResetPassword = () => {
+  const handleResetPassword = async () => {
+    if (!newPassword || !confirmPassword) {
+      setError('Both fields are required');
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-    console.log('Password Reset:', newPassword);
-    navigation.navigate('Login');
+
+    try {
+      const response = await axios.post('http://<YOUR_IP>:<PORT>/api/users/reset-password', {
+        email,
+        newPassword,
+      });
+
+      if (response.data.success) {
+        Alert.alert('Success', 'Password updated successfully', [
+          { text: 'OK', onPress: () => navigation.navigate('Login') },
+        ]);
+      } else {
+        setError(response.data.message || 'Something went wrong');
+      }
+    } catch (err) {
+      console.error('Reset error:', err);
+      setError('Failed to update password. Try again.');
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView
@@ -47,7 +72,6 @@ const CreatePasswordScreen = () => {
                 style={styles.logo}
               />
 
-              {/* Card Start */}
               <View style={styles.card}>
                 <Text style={styles.header}>Create Password</Text>
                 <Text style={styles.subtitle}>Please enter a new password</Text>
@@ -96,7 +120,6 @@ const CreatePasswordScreen = () => {
                   <Text style={styles.buttonText}>Reset Password</Text>
                 </TouchableOpacity>
               </View>
-              {/* Card End */}
             </View>
           </ScrollView>
         </TouchableWithoutFeedback>
@@ -192,3 +215,4 @@ const styles = StyleSheet.create({
 });
 
 export default CreatePasswordScreen;
+

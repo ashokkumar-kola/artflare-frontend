@@ -40,7 +40,7 @@ const OtpVerificationScreen = ({ navigation, route }: any) => {
       });
 
       Alert.alert('Success', res.data.message);
-      navigation.navigate('CreatePassword'); // or Home if needed
+      navigation.navigate('CreatePassword', { email });
     } catch (err: any) {
       Alert.alert('Error', err.response?.data?.message || 'Verification failed');
     }

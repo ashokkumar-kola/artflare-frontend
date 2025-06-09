@@ -15,6 +15,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const LoginScreen = ({ navigation }: any) => {
   const [form, setForm] = useState({
     email: '',
@@ -46,6 +48,9 @@ const LoginScreen = ({ navigation }: any) => {
 
       Alert.alert('Success', message || 'Logged in successfully');
       console.log('Token:', token, user.role);
+
+      await AsyncStorage.setItem('authToken', token);
+      await AsyncStorage.setItem('userData', JSON.stringify(user));
 
       if ( user.role.includes('artist') ) {
         navigation.navigate('ArtistDashboard', { artistId: user.id, token });

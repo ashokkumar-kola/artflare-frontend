@@ -9,6 +9,7 @@ export const colors = {
     black: '#000000',
     gray: '#D9D9D9',
     green: '#34A853',
+    purple:'#d2a0ff',
     // purple: '#d2a0ff',
 };
 
@@ -26,7 +27,7 @@ export const colors = {
     // marginTop: -20,
     // textAlign: 'center',
 
-// for subtitles 
+// for subtitles
     // fontSize: 16,
     // textAlign: 'center',
     // color: '#000000',

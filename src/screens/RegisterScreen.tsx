@@ -32,10 +32,10 @@ const RegistrationScreen = ({ navigation }: any) => {
   const validate = () => {
     const newErrors: typeof errors = {};
     if (!form.name.trim()) {newErrors.name = 'Name is required';}
-    if (!/^[0-9]{10}$/.test(form.phone_number)) newErrors.phone_number = 'Phone number must be 10 digits';
-    if (!/\S+@\S+\.\S+/.test(form.email)) newErrors.email = 'Email is invalid';
-    if (form.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-    if (!selectedRole) newErrors.role = 'Please select a role';
+    if (!/^[0-9]{10}$/.test(form.phone_number)) {newErrors.phone_number = 'Phone number must be 10 digits';}
+    if (!/\S+@\S+\.\S+/.test(form.email)) {newErrors.email = 'Email is invalid';}
+    if (form.password.length < 6) {newErrors.password = 'Password must be at least 6 characters';}
+    if (!selectedRole) {newErrors.role = 'Please select a role';}
     return newErrors;
   };
 
@@ -52,7 +52,7 @@ const RegistrationScreen = ({ navigation }: any) => {
     }
 
     try {
-      const response = await axios.post('http://10.0.2.2:3000/api/auth/register', {
+      const response = await axios.post('http://192.168.1.93:3000/api/auth/register', {
         ...form,
         role: selectedRole,
       });
