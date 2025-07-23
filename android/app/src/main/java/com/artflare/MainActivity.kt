@@ -2,8 +2,8 @@ package com.artflare
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
-import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
-import com.facebook.react.defaults.DefaultReactActivityDelegate
+import com.facebook.react.ReactRootView
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView
 
 class MainActivity : ReactActivity() {
 
@@ -14,9 +14,13 @@ class MainActivity : ReactActivity() {
   override fun getMainComponentName(): String = "artflare"
 
   /**
-   * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]
-   * which allows you to enable New Architecture with a single boolean flags [fabricEnabled]
+   * Returns the instance of the [ReactActivityDelegate] using RNGestureHandlerEnabledRootView.
    */
-  override fun createReactActivityDelegate(): ReactActivityDelegate =
-      DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
+  override fun createReactActivityDelegate(): ReactActivityDelegate {
+    return object : ReactActivityDelegate(this, mainComponentName) {
+      override fun createRootView(): ReactRootView {
+        return RNGestureHandlerEnabledRootView(this@MainActivity)
+      }
+    }
+  }
 }

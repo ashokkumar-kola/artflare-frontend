@@ -1,100 +1,172 @@
-// import React from 'react';
-// import {
-//   View,
-//   Text,
-//   Image,
-//   StyleSheet,
-//   TouchableOpacity
-// } from 'react-native';
-// import Icon from 'react-native-vector-icons/FontAwesome';
-// import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+// components/ArtworkCard.tsx
+import React from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {useNavigation} from '@react-navigation/native';
 
-// interface ArtworkCardProps {
-//   artName: string;
-//   artistName: string;
-//   price: number;
-//   image: any; // Usually require(...) or { uri: '' }
-//   isInWishlist: boolean;
-//   onToggleWishlist: () => void;
-//   onAddToCart: () => void;
-// }
+const {width} = Dimensions.get('window');
 
-// const ArtworkCard: React.FC<ArtworkCardProps> = ({
-//   artName,
-//   artistName,
-//   price,
-//   image,
-//   isInWishlist,
-//   onToggleWishlist,
-//   onAddToCart
-// }) => {
-//   return (
-//     <View style={styles.card}>
-//       <Image source={image} style={styles.image} />
+interface ArtworkProps {
+  id: string | number;          // make sure every artwork has an id
+  art_name: string;
+  art_image: string | null;
+  artist_id: string;
+  pricing: number;
+  description: string;
+  rating: number;
+  created_at: string;
+  quantity: number;
+}
 
-//       <View style={styles.info}>
-//         <Text style={styles.name}>{artName}</Text>
-//         <Text style={styles.artist}>{artistName}</Text>
-//         <Text style={styles.price}>₹{price}</Text>
-//       </View>
+const ArtworkCard: React.FC<{artwork: ArtworkProps}> = ({artwork}) => {
+  const navigation = useNavigation<any>();
 
-//       <View style={styles.actions}>
-//         <TouchableOpacity onPress={onToggleWishlist}>
-//           <Icon
-//             name={isInWishlist ? 'heart' : 'heart-o'}
-//             size={22}
-//             color={isInWishlist ? 'red' : 'gray'}
-//           />
-//         </TouchableOpacity>
+  const {
+    art_name,
+    art_image,
+    artist_id,
+    pricing,
+    description,
+    rating,
+    created_at,
+    quantity,
+  } = artwork;
 
-//         <TouchableOpacity onPress={onAddToCart}>
-//           <MaterialIcon name="add-shopping-cart" size={22} color="black" />
-//         </TouchableOpacity>
-//       </View>
-//     </View>
-//   );
-// };
+  const formattedDate = new Date(created_at).toLocaleDateString('en-US');
 
-// const styles = StyleSheet.create({
-//   card: {
-//     borderRadius: 12,
-//     backgroundColor: '#fff',
-//     marginBottom: 15,
-//     padding: 10,
-//     elevation: 2,
-//     shadowColor: '#000',
-//     shadowOpacity: 0.1,
-//     shadowOffset: { width: 0, height: 1 },
-//     shadowRadius: 4,
-//   },
-//   image: {
-//     width: '100%',
-//     height: 160,
-//     borderRadius: 10,
-//   },
-//   info: {
-//     marginTop: 10,
-//   },
-//   name: {
-//     fontSize: 16,
-//     fontWeight: '600',
-//     color: '#333',
-//   },
-//   artist: {
-//     fontSize: 14,
-//     color: '#777',
-//     marginVertical: 4,
-//   },
-//   price: {
-//     fontSize: 16,
-//     color: '#000',
-//     fontWeight: '500',
-//   },
-//   actions: {
-//     marginTop: 10,
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//   },
-// });
+  /** navigate to details */
+  const handlePress = () => {
+    navigation.navigate('ArtworkDetails', {artwork});
+  };
 
-// export default ArtworkCard;
+  return (
+    <TouchableOpacity activeOpacity={0.85} onPress={handlePress}>
+      {/* single card – no extra background wrapper */}
+      <View style={styles.card}>
+        {/* Picture */}
+        <Image
+          source={
+            art_image
+              ? {uri: art_image}
+              : require('../assets/painting/Painting4.jpeg')
+          }
+          style={styles.image}
+          resizeMode="cover"
+        />
+
+        {/* Name row with heart */}
+        <View style={styles.nameRow}>
+          <Text style={styles.name}>{art_name}</Text>
+          <Icon name="heart-o" size={18} color="#A45EE3" />
+        </View>
+
+        {/* Description */}
+        <Text style={styles.desc} numberOfLines={2}>
+          {description}
+        </Text>
+
+        {/* Meta rows */}
+        <View style={styles.row}>
+          <Text style={styles.label}>Artist:</Text>
+          <Text style={styles.value}>{artist_id}</Text>
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Price:</Text>
+          <Text style={styles.price}>₹{pricing}</Text>
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Rating:</Text>
+          <Text style={styles.value}>
+            <Icon name="star" color="#FFD700" /> {rating}
+          </Text>
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Quantity:</Text>
+          <Text style={styles.value}>{quantity}</Text>
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Added:</Text>
+          <Text style={styles.value}>{formattedDate}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+export default ArtworkCard;
+
+/* ---------- styles (card background colour removed) ---------- */
+const styles = StyleSheet.create({
+    card: {
+    width: width * 0.9,
+    backgroundColor: '#E5D9F2',
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginVertical: 12,
+    alignSelf: 'center',
+    elevation: 5,
+    shadowColor: '#A45EE3',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    padding: 16,
+  },
+
+  image: {
+    width: '100%',
+    height: 180,
+    borderRadius: 12,
+    marginBottom: 10,
+    backgroundColor: '#E5D9F2',
+  },
+  nameRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#4A148C',
+    flexShrink: 1,
+    marginBottom: 6,
+  },
+  desc: {
+    fontSize: 14,
+    color: '#000',
+    marginBottom: 10,
+  },
+
+  row: {
+    flexDirection: 'row',
+    marginBottom: 6,
+  },
+
+  label: {
+    fontWeight: 'bold',
+    width: 80,
+    color: '#555',
+  },
+
+  value: {
+    color: '#333',
+    flexShrink: 1,
+  },
+
+  price: {
+    color: '#00796B',
+    fontWeight: 'bold',
+  },
+});

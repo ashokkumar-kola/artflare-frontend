@@ -25,7 +25,7 @@ interface Artwork {
   artist_name: string;
 }
 
-const API_BASE_URL = 'http://192.168.1.93:3000/api/artworks/category';
+const API_BASE_URL = 'http://192.168.29.20:3000/api/artworks/category';
 
 const ArtworksScreen: React.FC = () => {
   const route = useRoute<RouteProp<ParamList, 'Artworks'>>();
