@@ -154,7 +154,9 @@ const HomeScreen = () => {
 
       <Text style={styles.tagline}>Discover unique artworks</Text>
 
-      <SearchBar placeholder="Search artworks, artists..." />
+    <View style={styles.searchContainer}>
+        <SearchBar placeholder="Search artworks, artists..." />
+    </View>
 
       <Categories
         categories={categories}
@@ -174,7 +176,8 @@ const HomeScreen = () => {
         artworks={artworkData}
         onSeeAll={() => handleSeeAll('new arrivals')}
       />
-      <TouchableOpacity onPress={() => navigation.navigate('ExploreStack' as never)}>
+
+      <TouchableOpacity onPress={() => navigation.navigate('ExploreStack' as never)} style={styles.exploreButton}>
         <ImageBackground
           source={require('../../assets/artwork/img1.jpeg')}
           style={styles.imageBackground}
@@ -250,6 +253,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 15,
   },
+  searchContainer: {
+    marginBottom: 16,
+  },
   buttonText: {
     color: '#fff',
     fontSize: 20,
@@ -299,6 +305,9 @@ const styles = StyleSheet.create({
     height: 0,
     opacity: 0,
     overflow: 'hidden',
+  },
+  exploreButton: {
+    margin: 16,
   },
 });
 
