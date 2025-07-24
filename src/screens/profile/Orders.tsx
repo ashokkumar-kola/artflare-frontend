@@ -1,9 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
-const Orders = ({ route }) => {
-  const navigation = useNavigation();
+const Orders = ({ navigation, route }: any) => {
 
   // Optional: If you're receiving artistId and token from previous screen
   const artistId = route?.params?.artistId || 'sampleArtistId';

@@ -13,7 +13,6 @@ import axios from 'axios';
 import ArtworkCard from '../../components/ArtworkCard';
 import TopNavBar from '../../components/TopNavBar';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
 
 interface Artwork {
   art_name: string;
@@ -28,8 +27,7 @@ interface Artwork {
 
 const API_URL = 'http://192.168.29.20:3000/api/artwork';
 
-const ArtworksScreen: React.FC = () => {
-  const navigation = useNavigation();
+const ArtworksScreen: React.FC = ({ navigation }: any) => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -11,15 +11,14 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+
 import axios from 'axios';
 import { FAB, Card, Title, Paragraph } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { width } = Dimensions.get('window');
 
-const ArtistDashboardScreen = ({ route }) => {
-  const navigation = useNavigation();
+const ArtistDashboardScreen = ({ navigation, route }: any) => {
   const [artworks, setArtworks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('Dashboard');
@@ -68,7 +67,7 @@ const ArtistDashboardScreen = ({ route }) => {
       <Card.Actions style={styles.cardActions}>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate('AddEditArtwork', { artistId, token, artwork: item })
+            navigation.navigate('AddEditArtwork', { })
           }
         >
           <Icon name="pencil" size={24} color="#1976d2" />
@@ -89,7 +88,7 @@ const ArtistDashboardScreen = ({ route }) => {
 
   const handleNavigation = (tabName: string, screen: string) => {
     setActiveTab(tabName);
-    navigation.navigate(screen as never, { artistId, token });
+    navigation.navigate(screen as never, { });
   };
 
   return (
@@ -112,7 +111,7 @@ const ArtistDashboardScreen = ({ route }) => {
         style={styles.fab}
         icon="plus"
         color="white"
-        onPress={() => navigation.navigate('AddEditArtwork', { artistId, token })}
+        onPress={() => navigation.navigate('AddEditArtwork', { })}
       />
 
       {/* Bottom Navigation Bar */}

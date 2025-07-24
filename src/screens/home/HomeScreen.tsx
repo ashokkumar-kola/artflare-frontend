@@ -13,18 +13,21 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { InteractionManager } from 'react-native';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
-import type { StackNavigationProp } from '@react-navigation/stack';
-import type { HomeStackParamList } from '../../navigation/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../../navigation/types';
 
 import SearchBar from '../../components/SearchBar';
 import Categories from '../../components/Categories';
 import FeaturedArtworks from '../../components/FeaturedArtworks';
 import PopularArtists from '../../components/PopularArtists';
 import NewArrivals from '../../components/NewArrivals';
-import BottomNavigation from '../../components/BottomNavigation';
+
+import images from '../../assets';
+
+type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'AppDrawer'>;
 
 const HomeScreen = () => {
-  const navigation = useNavigation<StackNavigationProp<HomeStackParamList>>();
+  const navigation = useNavigation<HomeScreenNavigationProp>();
   const [userName, setUserName] = useState<string|null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -60,12 +63,12 @@ const HomeScreen = () => {
     (async () => {
       const token = await AsyncStorage.getItem('authToken');
       if (!token) {
-        navigation.navigate('Login' as never);
+        navigation.navigate('AuthStack' as never);
         return;
       }
       const raw = await AsyncStorage.getItem('userData');
       if (!raw) {
-        navigation.navigate('Login' as never);
+        navigation.navigate('AuthStack' as never);
         return;
       }
       try {
@@ -82,14 +85,14 @@ const HomeScreen = () => {
     if (userName) {
       setMenuOpen(prev => !prev);
     } else {
-      navigation.navigate('Login' as never);
+      navigation.navigate('AuthStack' as never);
     }
   };
 
   const handleProfile = () => {
     setMenuOpen(false);
     InteractionManager.runAfterInteractions(() => {
-      navigation.navigate('Profile' as never);
+      navigation.navigate('ProfileStack' as never);
     });
   };
 
@@ -98,12 +101,23 @@ const HomeScreen = () => {
     setMenuOpen(false);
     setUserName(null);
     InteractionManager.runAfterInteractions(() => {
-      navigation.navigate('Login' as never);
+      navigation.navigate('AuthStack' as never);
     });
   };
 
   const handleSeeAll = (section: string) => {
-    if (section === 'categories') {navigation.navigate('Categories' as never);}
+    if (section === 'categories') {
+      navigation.navigate('AppDrawer', {
+        screen: 'MainTabs',
+        params: {
+          screen: 'ExploreStack',
+          params: {
+            screen: 'CategoryFilter',
+            params: { categoryId: 'abc123' },
+          },
+        },
+      });
+    }
     else {console.log(`See all ${section}`);}
   };
 
@@ -160,7 +174,7 @@ const HomeScreen = () => {
         artworks={artworkData}
         onSeeAll={() => handleSeeAll('new arrivals')}
       />
-      <TouchableOpacity onPress={() => navigation.navigate('Artwork' as never)}>
+      <TouchableOpacity onPress={() => navigation.navigate('ExploreStack' as never)}>
         <ImageBackground
           source={require('../../assets/artwork/img1.jpeg')}
           style={styles.imageBackground}
@@ -181,7 +195,6 @@ const HomeScreen = () => {
         keyExtractor={() => Math.random().toString()}
         renderItem={() => <View />}
         ListHeaderComponent={headerContent}
-        ListFooterComponent={<BottomNavigation />}
         showsVerticalScrollIndicator={false}
       />
     </SafeAreaView>

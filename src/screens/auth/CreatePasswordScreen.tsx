@@ -14,14 +14,13 @@ import {
   Keyboard,
   Alert,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+
 import axios from 'axios';
 
-const CreatePasswordScreen = () => {
+const CreatePasswordScreen = ({ navigation }: any) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const navigation = useNavigation();
   const route = useRoute();
   const { email } = route.params || {}; // Assumes email passed via navigation
 

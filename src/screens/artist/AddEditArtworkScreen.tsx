@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import { api } from '../../api/apiClient';
 
-const AddEditArtworkScreen = ({ route, navigation }) => {
+const AddEditArtworkScreen = ({ navigation, route }: any) => {
   const { artistId, token, artwork } = route.params || {};
 
   // Set initial states
