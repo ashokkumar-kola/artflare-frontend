@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeStackNavigation from '../navigation/HomeStackNavigation';
 import ExploreStackNavigation from '../navigation/ExploreStackNavigation';
-import WishlistScreen from '../screens/wishlish/WishlistScreen';
+import WishlistScreen from '../screens/wishlist/WishlistScreen';
 import CartScreen from '../screens/cart/CartScreen';
 import ProfileStackNavigation from './ProfileStackNavigation';
 

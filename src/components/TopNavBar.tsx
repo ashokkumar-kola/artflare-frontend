@@ -1,101 +1,166 @@
 import React from 'react';
-import { View, Image, TouchableOpacity, StyleSheet, Platform, Dimensions } from 'react-native';
+import { 
+  View, 
+  Image, 
+  TouchableOpacity, 
+  StyleSheet, 
+  Platform, 
+  Dimensions,
+  SafeAreaView 
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, DrawerActions } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/types';
+import { moderateScale, verticalScale, horizontalScale } from '../utils/scaling';
+
+type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'AppDrawer'>;
 
 const TopHeader = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeScreenNavigationProp>();
   const screenWidth = Dimensions.get('window').width;
 
+  const handleMenuPress = () => {
+    navigation.dispatch(DrawerActions.openDrawer());
+  };
+
+  const handleHomePress = () => {
+    navigation.navigate('AppDrawer', {
+      screen: 'MainTabs',
+      params: {
+        screen: 'HomeStack',
+        params: {
+          screen: 'Home',
+        },
+      },
+    });
+  };
+
+  const handleProfilePress = () => {
+    navigation.navigate('AuthStack', {
+      screen: 'Login',
+    });
+  };
+
   return (
-    <View style={styles.headerWrapper}>
-      <View style={styles.topBar}>
-        {/* Left Icon */}
-        <TouchableOpacity style={styles.iconWrapper}>
-          <Icon name="bars" size={28} color='#A45EE3' />
-        </TouchableOpacity>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.headerWrapper}>
+        <View style={styles.topBar}>
+          {/* Left Icon - Menu */}
+          <TouchableOpacity
+            onPress={handleMenuPress}
+            style={styles.iconWrapper}
+            accessibilityLabel="Menu"
+            accessibilityRole="button"
+            accessibilityHint="Opens navigation menu"
+          >
+            <Icon
+              name="bars"
+              size={moderateScale(24)}
+              color="#A45EE3"
+            />
+          </TouchableOpacity>
 
-        {/* Center Logo */}
-        <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.logoWrapper}>
-          <Image
-            source={require('../assets/logo.png')}
-            style={styles.logo}
-            resizeMode="cover"
-          />
-        </TouchableOpacity>
+          {/* Center Logo */}
+          <TouchableOpacity
+            onPress={handleHomePress}
+            style={styles.logoWrapper}
+            accessibilityLabel="Home"
+            accessibilityRole="button"
+            activeOpacity={0.8}
+          >
+            <Image
+              source={require('../assets/logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+              accessibilityIgnoresInvertColors
+            />
+          </TouchableOpacity>
 
-        {/* Right Icon */}
-        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.iconWrapper}>
-          <View style={styles.userCircle}>
-            <Icon name="user" size={18} color="#fff" />
-          </View>
-        </TouchableOpacity>
+          {/* Right Icon - Profile */}
+          <TouchableOpacity
+            onPress={handleProfilePress}
+            style={styles.iconWrapper}
+            accessibilityLabel="User profile"
+            accessibilityRole="button"
+            accessibilityHint="Navigates to login screen"
+            activeOpacity={0.8}
+          >
+            <View style={styles.userCircle}>
+              <Icon name="user" size={moderateScale(16)} color="#fff" />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
-
-      {/* Concave Curve */}
-      <View style={[styles.concaveCurve, { width: screenWidth + 100 }]} />
-    </View>
+    </SafeAreaView>
   );
 };
 
 export default TopHeader;
 
 const styles = StyleSheet.create({
+  safeArea: {
+    backgroundColor: '#fff',
+  },
   headerWrapper: {
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'ios' ? 50 : 10,
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: '#ddd',
-    position: 'relative',
-    zIndex: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
   topBar: {
-    height: 60,
+    height: verticalScale(60),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 4,
+    paddingHorizontal: horizontalScale(16),
+    position: 'relative',
   },
   iconWrapper: {
-    width: 36,
-    height: 36,
+    width: moderateScale(44),
+    height: moderateScale(44),
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: moderateScale(22),
+    overflow: 'hidden',
   },
   logoWrapper: {
     position: 'absolute',
     left: '50%',
-    transform: [{ translateX: -50 }],
-    top: -12,
+    transform: [{ translateX: -moderateScale(55) }],
+    top: verticalScale(Platform.OS === 'ios' ? -8 : -12),
   },
   logo: {
-    width: 110,
-    height: 70,
-    // position:'absolute',
-
+    width: horizontalScale(110),
+    height: verticalScale(70),
   },
   userCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: moderateScale(36),
+    height: moderateScale(36),
+    borderRadius: moderateScale(18),
     backgroundColor: '#A45EE3',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#A45EE3',
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 4,
-    // margin:8,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#A45EE3',
+        shadowOpacity: 0.3,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
-  // concaveCurve: {
-  //   position: 'absolute',
-  //   bottom: -20,
-  //   left: '50%',
-  //   height: 40,
-  //   transform: [{ translateX: -((Dimensions.get('window').width + 100) / 2) }],
-  //   backgroundColor: '#000',
-  //   borderBottomLeftRadius: 300,
-  //   borderBottomRightRadius: 300,
-  //   zIndex: -1,
-  // },
 });
