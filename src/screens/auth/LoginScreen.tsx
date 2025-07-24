@@ -18,6 +18,64 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../../utils/colors';
 import { loginUser } from '../../services/AuthServices';
 
+// ✅ Move child components OUTSIDE to keep them stable
+type LoginInputProps = {
+  icon: string;
+  placeholder: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  secure?: boolean;
+  toggleSecure?: () => void;
+};
+
+export const LoginInput = ({
+  icon,
+  placeholder,
+  value,
+  onChangeText,
+  secure = false,
+  toggleSecure,
+}: LoginInputProps) => (
+  <View style={styles.inputContainer}>
+    <Icon name={icon} size={20} color="#5D3FD3" style={styles.icon} />
+    <TextInput
+      placeholder={placeholder}
+      style={styles.input}
+      value={value}
+      onChangeText={onChangeText}
+      secureTextEntry={secure}
+      autoCapitalize="none"
+    />
+    {toggleSecure && (
+      <TouchableOpacity onPress={toggleSecure}>
+        <MaterialIcon
+          name={secure ? 'visibility-off' : 'visibility'}
+          size={20}
+          color="#5D3FD3"
+        />
+      </TouchableOpacity>
+    )}
+  </View>
+);
+
+type LoginButtonProps = {
+  onPress: () => void;
+  label: string;
+  loading: boolean;
+};
+
+export const LoginButton = ({ onPress, label, loading }: LoginButtonProps) => (
+  <TouchableOpacity onPress={onPress} disabled={loading}>
+    <LinearGradient
+      colors={['#5D3FD3', '#8E2DE2']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={styles.loginButton}
+    >
+      <Text style={styles.loginText}>{loading ? 'Logging in...' : label}</Text>
+    </LinearGradient>
+  </TouchableOpacity>
+);
 
 const LoginScreen = ({ navigation }: any) => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -37,8 +95,8 @@ const LoginScreen = ({ navigation }: any) => {
   };
 
   const handleChange = (field: string, value: string) => {
-    setForm({ ...form, [field]: value });
-    setErrors({ ...errors, [field]: '' });
+    setForm(prev => ({ ...prev, [field]: value }));
+    setErrors(prev => ({ ...prev, [field]: '' }));
   };
 
   const handleLogin = async () => {
@@ -61,7 +119,7 @@ const LoginScreen = ({ navigation }: any) => {
       if (user.role.includes('artist')) {
         navigation.navigate('ArtistDashboard', { artistId: user.id, token });
       } else {
-        navigation.navigate('Home', { userId: user.id, token });
+        navigation.navigate('AppDrawer', { userId: user.id, token });
       }
     } catch (err: any) {
       const serverError = err.response?.data?.error || 'Something went wrong!';
@@ -70,49 +128,6 @@ const LoginScreen = ({ navigation }: any) => {
       setLoading(false);
     }
   };
-
-  const LoginInput = ({
-    icon,
-    placeholder,
-    value,
-    onChangeText,
-    secure = false,
-    toggleSecure,
-  }: any) => (
-    <View style={styles.inputContainer}>
-      <Icon name={icon} size={20} color="#5D3FD3" style={styles.icon} />
-      <TextInput
-        placeholder={placeholder}
-        style={styles.input}
-        value={value}
-        onChangeText={onChangeText}
-        secureTextEntry={secure}
-        autoCapitalize="none"
-      />
-      {toggleSecure && (
-        <TouchableOpacity onPress={toggleSecure}>
-          <MaterialIcon
-            name={secure ? 'visibility-off' : 'visibility'}
-            size={20}
-            color="#5D3FD3"
-          />
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-
-  const LoginButton = ({ onPress, label }: any) => (
-    <LinearGradient
-      colors={['#5D3FD3', '#8E2DE2']}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={styles.loginButton}
-    >
-      <TouchableOpacity onPress={onPress} disabled={loading}>
-        <Text style={styles.loginText}>{loading ? 'Logging in...' : label}</Text>
-      </TouchableOpacity>
-    </LinearGradient>
-  );
 
   return (
     <KeyboardAvoidingView
@@ -130,7 +145,7 @@ const LoginScreen = ({ navigation }: any) => {
             icon="envelope"
             placeholder="Email"
             value={form.email}
-            onChangeText={(text: string) => handleChange('email', text)}
+            onChangeText={(text) => handleChange('email', text)}
           />
           {errors.email && <Text style={styles.error}>{errors.email}</Text>}
 
@@ -139,7 +154,7 @@ const LoginScreen = ({ navigation }: any) => {
             placeholder="Password"
             value={form.password}
             secure={secureText}
-            onChangeText={(text: string) => handleChange('password', text)}
+            onChangeText={(text) => handleChange('password', text)}
             toggleSecure={() => setSecureText(!secureText)}
           />
           {errors.password && <Text style={styles.error}>{errors.password}</Text>}
@@ -148,7 +163,7 @@ const LoginScreen = ({ navigation }: any) => {
             <Text style={styles.forgotText}>Forgot Password?</Text>
           </TouchableOpacity>
 
-          <LoginButton onPress={handleLogin} label="Login" />
+          <LoginButton onPress={handleLogin} label="Login" loading={loading} />
 
           <Text style={styles.orText}>────────  OR  ────────</Text>
 
@@ -168,16 +183,16 @@ const LoginScreen = ({ navigation }: any) => {
           </Text>
         </View>
 
-        <LinearGradient
-          colors={['#5D3FD3', '#8E2DE2']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.homeButton}
-        >
-          <TouchableOpacity onPress={() => navigation.navigate('AppDrawer')}>
+        <TouchableOpacity onPress={() => navigation.navigate('AppDrawer')}>
+          <LinearGradient
+            colors={['#5D3FD3', '#8E2DE2']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.homeButton}
+          >
             <Text style={styles.homeText}>Skip & Explore Arts</Text>
-          </TouchableOpacity>
-        </LinearGradient>
+          </LinearGradient>
+        </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );

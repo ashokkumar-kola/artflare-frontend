@@ -16,6 +16,7 @@ export interface LoginForm {
 // }
 
 export const loginUser = async (form: LoginForm) => {
+  console.log(form);
   const response = await api.post('/auth/login',
     form,
     {
